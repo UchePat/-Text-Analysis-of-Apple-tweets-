@@ -1,0 +1,105 @@
+---
+title: ' Sentiment Analysis on Text data'
+author: "Uche Kalu"
+date: "4/17/2022"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+### Sentiment Analysis on Tweet and Tweet-related information of Apple company
+
+**Sentiment Analysis or Opinion Mining is a Natural Language Processing
+(NLP) technique that is performed on textual data to help businesses
+monitor brand and product sentiment in customer feedback, and understand
+customer needs.**
+
+**It is used to determine whether data is positive, negative or
+neutral**
+
+```{r include=FALSE}
+library(syuzhet)         
+library(lubridate)
+library(ggplot2)
+library(scales)
+library(reshape2)
+library(dplyr)
+```
+
+### DATA
+
+```{r save, message=FALSE, warning=FALSE}
+mydata <- read.table("apple.txt", header = T, sep = ',')
+
+ourdata <- iconv(mydata$text, to = "UTF-8")
+```
+
+### Obtain Sentiment scores for each Tweet
+
+**This will classify all the indexed tweets (each tweet will have an
+index number) among multiple sentiment column that best fits/describes
+that tweet**
+
+**Lets see the first 6 tweets and their Sentiment scores/values**
+
+```{r message=FALSE, warning=FALSE}
+s <- get_nrc_sentiment(ourdata)   
+head(s) 
+```
+
+**Lets see the 4th tweet that contains all this sentiments**
+
+```{r}
+ourdata[4]     
+
+```
+
+**Lets see the 1st tweet that contains all this sentiments**
+
+```{r}
+ourdata[1]
+```
+
+**We will classify the stated word - delay (taken from a tweet) among
+the multiple sentiment column headers that best fits/describes the
+stated word**
+
+```{r}
+get_nrc_sentiment('delay') 
+
+```
+
+**We will classify the stated word - ugly (taken from a tweet) among the
+multiple sentiment column headers that best fits/describes the stated
+word**
+
+```{r}
+get_nrc_sentiment('ugly')
+```
+
+### Visualizing the Sentiments Scores
+
+**Create a Bar plot using the Sentiment Scores**
+
+```{r fig.width=10}
+barplot(colSums(s),
+        las = 2,             
+        col = rainbow(10),    
+        ylab = 'Count',
+        main = 'Sentiment Scores for Apple Tweets')
+```
+
+**Lets display the Sentiment scores by percentage value**
+
+```{r fig.width=10}
+we <- 100*colSums(s)/sum(s)   
+
+barplot(we,   
+        las = 2,             
+        col = rainbow(10),    
+        ylab = 'Count',
+        main = 'Sentiment Scores for Apple Tweets')
+```
